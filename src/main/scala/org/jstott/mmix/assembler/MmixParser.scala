@@ -16,6 +16,11 @@ object MmixParser extends RegexParsers {
 
   def label: Parser[LabelToken] = "\\d*[A-Za-z][A-Za-z0-9]*".r ^^ { label => LabelToken(label) }
 
+  def is: Parser[IsToken.type] = "IS" ^^ { _ => IsToken }
+  def loc: Parser[LocToken.type] = "LOC" ^^ { _ => LocToken }
+
+  def assemblerToken: Parser[OperationToken] = is | loc
+
   def lda: Parser[LdaToken.type] = "LDA" ^^ { _ => LdaToken }
   def ldb: Parser[LdbToken.type] = "LDB" ^^ { _ => LdbToken }
   def ldbu: Parser[LdbuToken.type] = "LDBU" ^^ { _ => LdbuToken }
@@ -133,8 +138,8 @@ object MmixParser extends RegexParsers {
   def floatingPointOperation: Parser[OperationToken] = fadd | fmul | fsub | fdiv | frem | fsqrt | fint | fcmpe | fcmp |
     feqle | feql | fune | fun | fixu | fix | flotu | flot | sflotu | sflot | ldsf | stsf
 
-  def operation: Parser[OperationToken] = loadOperation | storeOperation | arithmeticOperation | conditionalOperation |
-    bitwiseOperation | bytewiseOperation | floatingPointOperation
+  def operation: Parser[OperationToken] = assemblerToken | loadOperation | storeOperation | arithmeticOperation |
+    conditionalOperation | bitwiseOperation | bytewiseOperation | floatingPointOperation
 
   def line: Parser[MmixProgramLine] = {
     opt(label) ~ w ~ operation /*~ opt(w) ~ opt(address) ~ opt(w)*/ ~ opt(newLine) ^^ {
