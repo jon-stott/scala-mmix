@@ -66,7 +66,41 @@ object MmixParser extends RegexParsers {
   def arithmeticOperation: Parser[OperationToken] = addu | add | subu | sub | mulu | mul | divu | div | addu2 | addu4 |
     addu8 | addu16 | negu | neg | slu | sl | sru | sr | cmpu | cmp
 
-  def operation: Parser[OperationToken] = loadOperation | storeOperation | arithmeticOperation
+  def csn: Parser[CsnToken.type] = "CSN" ^^ { _ => CsnToken }
+  def csz: Parser[CszToken.type] = "CSZ" ^^ { _ => CszToken }
+  def csp: Parser[CspToken.type] = "CSP" ^^ { _ => CspToken }
+  def csod: Parser[CsodToken.type] = "CSOD" ^^ { _ => CsodToken }
+  def csnn: Parser[CsnnToken.type] = "CSNN" ^^ { _ => CsnnToken }
+  def csnz: Parser[CsnzToken.type] = "CSNZ" ^^ { _ => CsnzToken }
+  def csnp: Parser[CsnpToken.type] = "CSNP" ^^ { _ => CsnpToken }
+  def csev: Parser[CsevToken.type] = "CSEV" ^^ { _ => CsevToken }
+  def zsn: Parser[ZsnToken.type] = "ZSN" ^^ { _ => ZsnToken }
+  def zsz: Parser[ZszToken.type] = "ZSZ" ^^ { _ => ZszToken }
+  def zsp: Parser[ZspToken.type] = "ZSP" ^^ { _ => ZspToken }
+  def zsod: Parser[ZsodToken.type] = "ZSOD" ^^ { _ => ZsodToken }
+  def zsnn: Parser[ZsnnToken.type] = "ZSNN" ^^ { _ => ZsnnToken }
+  def zsnz: Parser[ZsnzToken.type] = "ZSNZ" ^^ { _ => ZsnzToken }
+  def zsnp: Parser[ZsnpToken.type] = "ZSNP" ^^ { _ => ZsnpToken }
+  def zsev: Parser[ZsevToken.type] = "ZSEV" ^^ { _ => ZsevToken }
+
+  def conditionalOperation: Parser[OperationToken] =  csnn | csnz | csnp | csn | csz | csp | csod | csev | zsnn |
+    zsnz | zsnp | zsn | zsz | zsp | zsod | zsev
+
+  def and: Parser[AndToken.type] = "AND" ^^ { _ => AndToken }
+  def or: Parser[OrToken.type] = "OR" ^^ { _ => OrToken }
+  def xor: Parser[XorToken.type] = "XOR" ^^ { _ => XorToken }
+  def andn: Parser[AndnToken.type] = "ANDN" ^^ { _ => AndnToken }
+  def orn: Parser[OrnToken.type] = "ORN" ^^ { _ => OrnToken }
+  def nand: Parser[NandToken.type] = "NAND" ^^ { _ => NandToken }
+  def nor: Parser[NorToken.type] = "NOR" ^^ { _ => NorToken }
+  def nxor: Parser[NxorToken.type] = "NXOR" ^^ { _ => NxorToken }
+  def mux: Parser[MuxToken.type] = "MUX" ^^ { _ => MuxToken }
+  def sadd: Parser[SaddToken.type] = "SADD" ^^ { _ => SaddToken }
+
+  def bitwiseOperation: Parser[OperationToken] = andn | and | orn | or | xor | nor | nand | nxor | sadd | mux
+
+  def operation: Parser[OperationToken] = loadOperation | storeOperation | arithmeticOperation | conditionalOperation |
+    bitwiseOperation
 
   def line: Parser[MmixProgramLine] = {
     opt(label) ~ w ~ operation /*~ opt(w) ~ opt(address) ~ opt(w)*/ ~ opt(newLine) ^^ {

@@ -119,4 +119,78 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
     result mustBe expected
   }
 
+  it should "parse conditional operations (CSx/ZSx)" in {
+    val line =
+      """foo CSN
+        |    CSZ
+        |    CSP
+        |    CSOD
+        |    CSNN
+        |    CSNZ
+        |    CSNP
+        |    CSEV
+        |    ZSN
+        |    ZSZ
+        |    ZSP
+        |    ZSOD
+        |    ZSNN
+        |    ZSNZ
+        |    ZSNP
+        |    ZSEV
+        |""".stripMargin
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(Some(LabelToken("foo")), CsnToken),
+        MmixProgramLine(None, CszToken),
+        MmixProgramLine(None, CspToken),
+        MmixProgramLine(None, CsodToken),
+        MmixProgramLine(None, CsnnToken),
+        MmixProgramLine(None, CsnzToken),
+        MmixProgramLine(None, CsnpToken),
+        MmixProgramLine(None, CsevToken),
+        MmixProgramLine(None, ZsnToken),
+        MmixProgramLine(None, ZszToken),
+        MmixProgramLine(None, ZspToken),
+        MmixProgramLine(None, ZsodToken),
+        MmixProgramLine(None, ZsnnToken),
+        MmixProgramLine(None, ZsnzToken),
+        MmixProgramLine(None, ZsnpToken),
+        MmixProgramLine(None, ZsevToken)
+      )
+    )
+    result mustBe expected
+  }
+
+  it should "parse bitwise operations" in {
+    val line =
+      """foo AND
+        |    OR
+        |    XOR
+        |    ANDN
+        |    ORN
+        |    NAND
+        |    NOR
+        |    NXOR
+        |    MUX
+        |    SADD
+        |""".stripMargin
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(Some(LabelToken("foo")), AndToken),
+        MmixProgramLine(None, OrToken),
+        MmixProgramLine(None, XorToken),
+        MmixProgramLine(None, AndnToken),
+        MmixProgramLine(None, OrnToken),
+        MmixProgramLine(None, NandToken),
+        MmixProgramLine(None, NorToken),
+        MmixProgramLine(None, NxorToken),
+        MmixProgramLine(None, MuxToken),
+        MmixProgramLine(None, SaddToken)
+      )
+    )
+    result mustBe expected
+  }
+
 }
