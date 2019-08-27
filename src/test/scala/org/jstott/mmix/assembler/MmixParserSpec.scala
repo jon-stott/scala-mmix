@@ -428,6 +428,25 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
     result mustBe expected
   }
 
+  it should "parse other operations" in {
+    val line =
+      """foo GET
+        |    PUT
+        |    GETA
+        |    SWYM
+        |""".stripMargin
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(Some(LabelToken("foo")), GetToken),
+        MmixProgramLine(None, PutToken),
+        MmixProgramLine(None, GetaToken),
+        MmixProgramLine(None, SwymToken)
+      )
+    )
+    result mustBe expected
+  }
+
   it should "parse assembler tokens" in {
     val line =
       """foo IS

@@ -206,9 +206,16 @@ object MmixParser extends RegexParsers {
 
   def interruptOperation: Parser[OperationToken] = trip | trap | resume
 
+  def get: Parser[GetToken.type] = "GET" ^^ { _ => GetToken }
+  def put: Parser[PutToken.type] = "PUT" ^^ { _ => PutToken }
+  def geta: Parser[GetaToken.type] = "GETA" ^^ { _ => GetaToken }
+  def swym: Parser[SwymToken.type] = "SWYM" ^^ { _ => SwymToken }
+
+  def otherOperation: Parser[OperationToken] = geta | get | put | swym
+
   def operation: Parser[OperationToken] = assemblerToken | loadOperation | storeOperation | arithmeticOperation |
     conditionalOperation | immediateConstantOperation | bitwiseOperation | bytewiseOperation | floatingPointOperation |
-    jumpOrBranchOperation | subroutineCallOperation | systemOperation | interruptOperation
+    jumpOrBranchOperation | subroutineCallOperation | systemOperation | interruptOperation | otherOperation
 
   def line: Parser[MmixProgramLine] = {
     opt(label) ~ w ~ operation /*~ opt(w) ~ opt(address) ~ opt(w)*/ ~ opt(newLine) ^^ {
