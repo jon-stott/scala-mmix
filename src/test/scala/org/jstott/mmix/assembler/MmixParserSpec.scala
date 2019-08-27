@@ -269,6 +269,49 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
     result mustBe expected
   }
 
+  it should "parse immediate constant operations" in {
+    val line =
+      """foo SETH
+        |    SETMH
+        |    SETML
+        |    SETL
+        |    INCH
+        |    INCMH
+        |    INCML
+        |    INCL
+        |    ORH
+        |    ORMH
+        |    ORML
+        |    ORL
+        |    ANDNH
+        |    ANDNMH
+        |    ANDNML
+        |    ANDNL
+        |""".stripMargin
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(Some(LabelToken("foo")), SethToken),
+        MmixProgramLine(None, SetmhToken),
+        MmixProgramLine(None, SetmlToken),
+        MmixProgramLine(None, SetlToken),
+        MmixProgramLine(None, InchToken),
+        MmixProgramLine(None, IncmhToken),
+        MmixProgramLine(None, IncmlToken),
+        MmixProgramLine(None, InclToken),
+        MmixProgramLine(None, OrhToken),
+        MmixProgramLine(None, OrmhToken),
+        MmixProgramLine(None, OrmlToken),
+        MmixProgramLine(None, OrlToken),
+        MmixProgramLine(None, AndnhToken),
+        MmixProgramLine(None, AndnmhToken),
+        MmixProgramLine(None, AndnmlToken),
+        MmixProgramLine(None, AndnlToken)
+      )
+    )
+    result mustBe expected
+  }
+
   it should "parse assembler tokens" in {
     val line =
       """foo IS

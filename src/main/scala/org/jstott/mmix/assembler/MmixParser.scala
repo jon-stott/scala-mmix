@@ -1,7 +1,5 @@
 package org.jstott.mmix.assembler
 
-import org.jstott.mmix.{ MmixByte, MmixOcta }
-
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.RegexParsers
 
@@ -138,8 +136,28 @@ object MmixParser extends RegexParsers {
   def floatingPointOperation: Parser[OperationToken] = fadd | fmul | fsub | fdiv | frem | fsqrt | fint | fcmpe | fcmp |
     feqle | feql | fune | fun | fixu | fix | flotu | flot | sflotu | sflot | ldsf | stsf
 
+  def seth: Parser[SethToken.type] = "SETH" ^^ { _ => SethToken }
+  def setmh: Parser[SetmhToken.type] = "SETMH" ^^ { _ => SetmhToken }
+  def setml: Parser[SetmlToken.type] = "SETML" ^^ { _ => SetmlToken }
+  def setl: Parser[SetlToken.type] = "SETL" ^^ { _ => SetlToken }
+  def inch: Parser[InchToken.type] = "INCH" ^^ { _ => InchToken }
+  def incmh: Parser[IncmhToken.type] = "INCMH" ^^ { _ => IncmhToken }
+  def incml: Parser[IncmlToken.type] = "INCML" ^^ { _ => IncmlToken }
+  def incl: Parser[InclToken.type] = "INCL" ^^ { _ => InclToken }
+  def orh: Parser[OrhToken.type] = "ORH" ^^ { _ => OrhToken }
+  def ormh: Parser[OrmhToken.type] = "ORMH" ^^ { _ => OrmhToken }
+  def orml: Parser[OrmlToken.type] = "ORML" ^^ { _ => OrmlToken }
+  def orl: Parser[OrlToken.type] = "ORL" ^^ { _ => OrlToken }
+  def andnh: Parser[AndnhToken.type] = "ANDNH" ^^ { _ => AndnhToken }
+  def andnmh: Parser[AndnmhToken.type] = "ANDNMH" ^^ { _ => AndnmhToken }
+  def andnml: Parser[AndnmlToken.type] = "ANDNML" ^^ { _ => AndnmlToken }
+  def andnl: Parser[AndnlToken.type] = "ANDNL" ^^ { _ => AndnlToken }
+
+  def immediateConstantOperation: Parser[OperationToken] = seth | setmh | setml | setl | inch | incmh | incml | incl |
+    orh | ormh | orml | orl | andnh | andnmh | andnml | andnl
+
   def operation: Parser[OperationToken] = assemblerToken | loadOperation | storeOperation | arithmeticOperation |
-    conditionalOperation | bitwiseOperation | bytewiseOperation | floatingPointOperation
+    conditionalOperation | immediateConstantOperation | bitwiseOperation | bytewiseOperation | floatingPointOperation
 
   def line: Parser[MmixProgramLine] = {
     opt(label) ~ w ~ operation /*~ opt(w) ~ opt(address) ~ opt(w)*/ ~ opt(newLine) ^^ {
