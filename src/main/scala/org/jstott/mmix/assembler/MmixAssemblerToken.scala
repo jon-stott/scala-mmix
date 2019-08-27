@@ -19,6 +19,7 @@ sealed trait OperatorToken extends OperationToken {
 case object IsToken extends AssemblerToken
 case object LocToken extends AssemblerToken
 
+case object TrapToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x00) }
 case object FcmpToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x01) }
 case object FunToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x02) }
 case object FeqlToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x03) }
@@ -173,6 +174,8 @@ case object AndnlToken extends OperatorToken { override def opcode: MmixByte = M
 case object JmpToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xf0) }
 case object PushjToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xf2) }
 case object PopToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xf8) }
+case object ResumeToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xf9) }
 case object SaveToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xfa) }
 case object UnsaveToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xfb) }
 case object SyncToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xfc) }
+case object TripToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xff) }

@@ -200,9 +200,15 @@ object MmixParser extends RegexParsers {
   def systemOperation: Parser[OperationToken] = ldunc | stunc | preld | prest | prego | syncid | syncd | sync | cswap |
     ldvts
 
+  def trip: Parser[TripToken.type] = "TRIP" ^^ { _ => TripToken }
+  def trap: Parser[TrapToken.type] = "TRAP" ^^ { _ => TrapToken }
+  def resume: Parser[ResumeToken.type] = "RESUME" ^^ { _ => ResumeToken }
+
+  def interruptOperation: Parser[OperationToken] = trip | trap | resume
+
   def operation: Parser[OperationToken] = assemblerToken | loadOperation | storeOperation | arithmeticOperation |
     conditionalOperation | immediateConstantOperation | bitwiseOperation | bytewiseOperation | floatingPointOperation |
-    jumpOrBranchOperation | subroutineCallOperation | systemOperation
+    jumpOrBranchOperation | subroutineCallOperation | systemOperation | interruptOperation
 
   def line: Parser[MmixProgramLine] = {
     opt(label) ~ w ~ operation /*~ opt(w) ~ opt(address) ~ opt(w)*/ ~ opt(newLine) ^^ {

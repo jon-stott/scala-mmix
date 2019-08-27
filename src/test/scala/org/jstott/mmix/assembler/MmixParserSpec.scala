@@ -411,6 +411,23 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
     result mustBe expected
   }
 
+  it should "parse interrupt operations" in {
+    val line =
+      """foo TRIP
+        |    TRAP
+        |    RESUME
+        |""".stripMargin
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(Some(LabelToken("foo")), TripToken),
+        MmixProgramLine(None, TrapToken),
+        MmixProgramLine(None, ResumeToken)
+      )
+    )
+    result mustBe expected
+  }
+
   it should "parse assembler tokens" in {
     val line =
       """foo IS
