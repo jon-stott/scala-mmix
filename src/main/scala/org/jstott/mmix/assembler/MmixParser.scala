@@ -108,8 +108,33 @@ object MmixParser extends RegexParsers {
 
   def bytewiseOperation: Parser[OperationToken] = bdif | wdif | tdif | odif | mor | mxor
 
+  def fadd: Parser[FaddToken.type] = "FADD" ^^ { _ => FaddToken }
+  def fsub: Parser[FsubToken.type] = "FSUB" ^^ { _ => FsubToken }
+  def fmul: Parser[FmulToken.type] = "FMUL" ^^ { _ => FmulToken }
+  def fdiv: Parser[FdivToken.type] = "FDIV" ^^ { _ => FdivToken }
+  def frem: Parser[FremToken.type] = "FREM" ^^ { _ => FremToken }
+  def fsqrt: Parser[FsqrtToken.type] = "FSQRT" ^^ { _ => FsqrtToken }
+  def fint: Parser[FintToken.type] = "FINT" ^^ { _ => FintToken }
+  def fcmp: Parser[FcmpToken.type] = "FCMP" ^^ { _ => FcmpToken }
+  def feql: Parser[FeqlToken.type] = "FEQL" ^^ { _ => FeqlToken }
+  def fun: Parser[FunToken.type] = "FUN" ^^ { _ => FunToken }
+  def fcmpe: Parser[FcmpeToken.type] = "FCMPE" ^^ { _ => FcmpeToken }
+  def feqle: Parser[FeqleToken.type] = "FEQLE" ^^ { _ => FeqleToken }
+  def fune: Parser[FuneToken.type] = "FUNE" ^^ { _ => FuneToken }
+  def fix: Parser[FixToken.type] = "FIX" ^^ { _ => FixToken }
+  def fixu: Parser[FixuToken.type] = "FIXU" ^^ { _ => FixuToken }
+  def flot: Parser[FlotToken.type] = "FLOT" ^^ { _ => FlotToken }
+  def flotu: Parser[FlotuToken.type] = "FLOTU" ^^ { _ => FlotuToken }
+  def sflot: Parser[SflotToken.type] = "SFLOT" ^^ { _ => SflotToken }
+  def sflotu: Parser[SflotuToken.type] = "SFLOTU" ^^ { _ => SflotuToken }
+  def ldsf: Parser[LdsfToken.type] = "LDSF" ^^ { _ => LdsfToken }
+  def stsf: Parser[StsfToken.type] = "STSF" ^^ { _ => StsfToken }
+
+  def floatingPointOperation: Parser[OperationToken] = fadd | fmul | fsub | fdiv | frem | fsqrt | fint | fcmpe | fcmp |
+    feqle | feql | fune | fun | fixu | fix | flotu | flot | sflotu | sflot | ldsf | stsf
+
   def operation: Parser[OperationToken] = loadOperation | storeOperation | arithmeticOperation | conditionalOperation |
-    bitwiseOperation | bytewiseOperation
+    bitwiseOperation | bytewiseOperation | floatingPointOperation
 
   def line: Parser[MmixProgramLine] = {
     opt(label) ~ w ~ operation /*~ opt(w) ~ opt(address) ~ opt(w)*/ ~ opt(newLine) ^^ {

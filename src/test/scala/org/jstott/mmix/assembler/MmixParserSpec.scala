@@ -216,4 +216,57 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
     result mustBe expected
   }
 
+  it should "parse floating point operations" in {
+    val line =
+      """foo FADD
+        |    FSUB
+        |    FMUL
+        |    FDIV
+        |    FREM
+        |    FSQRT
+        |    FINT
+        |    FCMP
+        |    FEQL
+        |    FUN
+        |    FCMPE
+        |    FEQLE
+        |    FUNE
+        |    FIX
+        |    FIXU
+        |    FLOT
+        |    FLOTU
+        |    SFLOT
+        |    SFLOTU
+        |    LDSF
+        |    STSF
+        |""".stripMargin
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(Some(LabelToken("foo")), FaddToken),
+        MmixProgramLine(None, FsubToken),
+        MmixProgramLine(None, FmulToken),
+        MmixProgramLine(None, FdivToken),
+        MmixProgramLine(None, FremToken),
+        MmixProgramLine(None, FsqrtToken),
+        MmixProgramLine(None, FintToken),
+        MmixProgramLine(None, FcmpToken),
+        MmixProgramLine(None, FeqlToken),
+        MmixProgramLine(None, FunToken),
+        MmixProgramLine(None, FcmpeToken),
+        MmixProgramLine(None, FeqleToken),
+        MmixProgramLine(None, FuneToken),
+        MmixProgramLine(None, FixToken),
+        MmixProgramLine(None, FixuToken),
+        MmixProgramLine(None, FlotToken),
+        MmixProgramLine(None, FlotuToken),
+        MmixProgramLine(None, SflotToken),
+        MmixProgramLine(None, SflotuToken),
+        MmixProgramLine(None, LdsfToken),
+        MmixProgramLine(None, StsfToken)
+      )
+    )
+    result mustBe expected
+  }
+
 }
