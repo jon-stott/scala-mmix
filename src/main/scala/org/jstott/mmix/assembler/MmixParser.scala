@@ -99,8 +99,17 @@ object MmixParser extends RegexParsers {
 
   def bitwiseOperation: Parser[OperationToken] = andn | and | orn | or | xor | nor | nand | nxor | sadd | mux
 
+  def bdif: Parser[BdifToken.type] = "BDIF" ^^ { _ => BdifToken }
+  def wdif: Parser[WdifToken.type] = "WDIF" ^^ { _ => WdifToken }
+  def tdif: Parser[TdifToken.type] = "TDIF" ^^ { _ => TdifToken }
+  def odif: Parser[OdifToken.type] = "ODIF" ^^ { _ => OdifToken }
+  def mor: Parser[MorToken.type] = "MOR" ^^ { _ => MorToken }
+  def mxor: Parser[MxorToken.type] = "MXOR" ^^ { _ => MxorToken }
+
+  def bytewiseOperation: Parser[OperationToken] = bdif | wdif | tdif | odif | mor | mxor
+
   def operation: Parser[OperationToken] = loadOperation | storeOperation | arithmeticOperation | conditionalOperation |
-    bitwiseOperation
+    bitwiseOperation | bytewiseOperation
 
   def line: Parser[MmixProgramLine] = {
     opt(label) ~ w ~ operation /*~ opt(w) ~ opt(address) ~ opt(w)*/ ~ opt(newLine) ^^ {

@@ -193,4 +193,27 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
     result mustBe expected
   }
 
+  it should "parse bytewise operations" in {
+    val line =
+      """foo BDIF
+        |    WDIF
+        |    TDIF
+        |    ODIF
+        |    MOR
+        |    MXOR
+        |""".stripMargin
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(Some(LabelToken("foo")), BdifToken),
+        MmixProgramLine(None, WdifToken),
+        MmixProgramLine(None, TdifToken),
+        MmixProgramLine(None, OdifToken),
+        MmixProgramLine(None, MorToken),
+        MmixProgramLine(None, MxorToken)
+      )
+    )
+    result mustBe expected
+  }
+
 }

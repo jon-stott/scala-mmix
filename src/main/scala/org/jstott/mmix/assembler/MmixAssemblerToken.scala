@@ -89,5 +89,11 @@ case object AndnToken extends OperationToken { override def opcode: MmixByte = M
 case object NandToken extends OperationToken { override def opcode: MmixByte = MmixByte(0xcc) }
 case object NxorToken extends OperationToken { override def opcode: MmixByte = MmixByte(0xce) }
 
+case object BdifToken extends OperationToken { override def opcode: MmixByte = MmixByte(0xd0) }
+case object WdifToken extends OperationToken { override def opcode: MmixByte = MmixByte(0xd2) }
+case object TdifToken extends OperationToken { override def opcode: MmixByte = MmixByte(0xd4) }
+case object OdifToken extends OperationToken { override def opcode: MmixByte = MmixByte(0xd6) }
 case object MuxToken extends OperationToken { override def opcode: MmixByte = MmixByte(0xd8) }
 case object SaddToken extends OperationToken { override def opcode: MmixByte = MmixByte(0xda) }
+case object MorToken extends OperationToken { override def opcode: MmixByte = MmixByte(0xdc) }
+case object MxorToken extends OperationToken { override def opcode: MmixByte = MmixByte(0xde) }
