@@ -178,9 +178,17 @@ object MmixParser extends RegexParsers {
   def jumpOrBranchOperation: Parser[OperationToken] = jmp | go | bz | bp | bod | bnn | bnz | bnp | bn | bev | pbz |
     pbp | pbod | pbnn | pbnz | pbnp | pbn | pbev
 
+  def pushj: Parser[PushjToken.type] = "PUSHJ" ^^ { _ => PushjToken }
+  def pushgo: Parser[PushgoToken.type] = "PUSHGO" ^^ { _ => PushgoToken }
+  def pop: Parser[PopToken.type] = "POP" ^^ { _ => PopToken }
+  def save: Parser[SaveToken.type] = "SAVE" ^^ { _ => SaveToken }
+  def unsave: Parser[UnsaveToken.type] = "UNSAVE" ^^ { _ => UnsaveToken }
+
+  def subroutineCallOperation: Parser[OperationToken] = pushj | pushgo | pop | save | unsave
+
   def operation: Parser[OperationToken] = assemblerToken | loadOperation | storeOperation | arithmeticOperation |
     conditionalOperation | immediateConstantOperation | bitwiseOperation | bytewiseOperation | floatingPointOperation |
-    jumpOrBranchOperation
+    jumpOrBranchOperation | subroutineCallOperation
 
   def line: Parser[MmixProgramLine] = {
     opt(label) ~ w ~ operation /*~ opt(w) ~ opt(address) ~ opt(w)*/ ~ opt(newLine) ^^ {

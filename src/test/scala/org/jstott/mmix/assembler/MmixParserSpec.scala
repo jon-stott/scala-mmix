@@ -359,6 +359,27 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
     result mustBe expected
   }
 
+  it should "parse subroutine call operations" in {
+    val line =
+      """foo PUSHJ
+        |    PUSHGO
+        |    POP
+        |    SAVE
+        |    UNSAVE
+        |""".stripMargin
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(Some(LabelToken("foo")), PushjToken),
+        MmixProgramLine(None, PushgoToken),
+        MmixProgramLine(None, PopToken),
+        MmixProgramLine(None, SaveToken),
+        MmixProgramLine(None, UnsaveToken)
+      )
+    )
+    result mustBe expected
+  }
+
   it should "parse assembler tokens" in {
     val line =
       """foo IS
