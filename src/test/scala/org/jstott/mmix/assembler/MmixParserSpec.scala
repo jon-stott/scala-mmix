@@ -380,6 +380,37 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
     result mustBe expected
   }
 
+  it should "parse system operations" in {
+    val line =
+      """foo LDUNC
+        |    STUNC
+        |    PRELD
+        |    PREST
+        |    PREGO
+        |    SYNCID
+        |    SYNCD
+        |    SYNC
+        |    CSWAP
+        |    LDVTS
+        |""".stripMargin
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(Some(LabelToken("foo")), LduncToken),
+        MmixProgramLine(None, StuncToken),
+        MmixProgramLine(None, PreldToken),
+        MmixProgramLine(None, PrestToken),
+        MmixProgramLine(None, PregoToken),
+        MmixProgramLine(None, SyncidToken),
+        MmixProgramLine(None, SyncdToken),
+        MmixProgramLine(None, SyncToken),
+        MmixProgramLine(None, CswapToken),
+        MmixProgramLine(None, LdvtsToken),
+      )
+    )
+    result mustBe expected
+  }
+
   it should "parse assembler tokens" in {
     val line =
       """foo IS

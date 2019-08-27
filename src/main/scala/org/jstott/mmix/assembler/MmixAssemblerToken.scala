@@ -110,6 +110,11 @@ case object LdouToken extends OperatorToken { override def opcode: MmixByte = Mm
 
 case object LdsfToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x90) }
 case object LdhtToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x92) }
+case object CswapToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x94) }
+case object LduncToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x96) }
+case object LdvtsToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x98) }
+case object PreldToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x9a) }
+case object PregoToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x9c) }
 case object GoToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x9e) }
 
 case object StbToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xa0) }
@@ -124,6 +129,10 @@ case object StouToken extends OperatorToken { override def opcode: MmixByte = Mm
 case object StsfToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xb0) }
 case object SthtToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xb2) }
 case object StcoToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xb4) }
+case object StuncToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xb6) }
+case object SyncdToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xb8) }
+case object PrestToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xba) }
+case object SyncidToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xbc) }
 case object PushgoToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xbe) }
 
 case object OrToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xc0) }
@@ -164,5 +173,6 @@ case object AndnlToken extends OperatorToken { override def opcode: MmixByte = M
 case object JmpToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xf0) }
 case object PushjToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xf2) }
 case object PopToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xf8) }
-case object SaveToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xa) }
-case object UnsaveToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xb) }
+case object SaveToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xfa) }
+case object UnsaveToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xfb) }
+case object SyncToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xfc) }

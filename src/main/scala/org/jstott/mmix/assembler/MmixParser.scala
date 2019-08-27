@@ -186,9 +186,23 @@ object MmixParser extends RegexParsers {
 
   def subroutineCallOperation: Parser[OperationToken] = pushj | pushgo | pop | save | unsave
 
+  def ldunc: Parser[LduncToken.type] = "LDUNC" ^^ { _ => LduncToken }
+  def stunc: Parser[StuncToken.type] = "STUNC" ^^ { _ => StuncToken }
+  def preld: Parser[PreldToken.type] = "PRELD" ^^ { _ => PreldToken }
+  def prest: Parser[PrestToken.type] = "PREST" ^^ { _ => PrestToken }
+  def prego: Parser[PregoToken.type] = "PREGO" ^^ { _ => PregoToken }
+  def syncid: Parser[SyncidToken.type] = "SYNCID" ^^ { _ => SyncidToken }
+  def syncd: Parser[SyncdToken.type] = "SYNCD" ^^ { _ => SyncdToken }
+  def sync: Parser[SyncToken.type] = "SYNC" ^^ { _ => SyncToken }
+  def cswap: Parser[CswapToken.type] = "CSWAP" ^^ { _ => CswapToken }
+  def ldvts: Parser[LdvtsToken.type] = "LDVTS" ^^ { _ => LdvtsToken }
+
+  def systemOperation: Parser[OperationToken] = ldunc | stunc | preld | prest | prego | syncid | syncd | sync | cswap |
+    ldvts
+
   def operation: Parser[OperationToken] = assemblerToken | loadOperation | storeOperation | arithmeticOperation |
     conditionalOperation | immediateConstantOperation | bitwiseOperation | bytewiseOperation | floatingPointOperation |
-    jumpOrBranchOperation | subroutineCallOperation
+    jumpOrBranchOperation | subroutineCallOperation | systemOperation
 
   def line: Parser[MmixProgramLine] = {
     opt(label) ~ w ~ operation /*~ opt(w) ~ opt(address) ~ opt(w)*/ ~ opt(newLine) ^^ {
