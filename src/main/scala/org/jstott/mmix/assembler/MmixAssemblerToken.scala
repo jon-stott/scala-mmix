@@ -63,6 +63,24 @@ case object SluToken extends OperatorToken { override def opcode: MmixByte = Mmi
 case object SrToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x3c) }
 case object SruToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x3e) }
 
+case object BnToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x40) }
+case object BzToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x42) }
+case object BpToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x44) }
+case object BodToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x46) }
+case object BnnToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x48) }
+case object BnzToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x4a) }
+case object BnpToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x4c) }
+case object BevToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x4e) }
+
+case object PbnToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x50) }
+case object PbzToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x52) }
+case object PbpToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x54) }
+case object PbodToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x56) }
+case object PbnnToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x58) }
+case object PbnzToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x5a) }
+case object PbnpToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x5c) }
+case object PbevToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x5e) }
+
 case object CsnToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x60) }
 case object CszToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x62) }
 case object CspToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x64) }
@@ -92,6 +110,7 @@ case object LdouToken extends OperatorToken { override def opcode: MmixByte = Mm
 
 case object LdsfToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x90) }
 case object LdhtToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x92) }
+case object GoToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x9e) }
 
 case object StbToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xa0) }
 case object StbuToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xa2) }
@@ -140,3 +159,5 @@ case object AndnhToken extends OperatorToken { override def opcode: MmixByte = M
 case object AndnmhToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xed) }
 case object AndnmlToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xee) }
 case object AndnlToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xef) }
+
+case object JmpToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0xf0) }

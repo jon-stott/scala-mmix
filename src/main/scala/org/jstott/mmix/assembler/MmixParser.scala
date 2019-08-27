@@ -156,8 +156,31 @@ object MmixParser extends RegexParsers {
   def immediateConstantOperation: Parser[OperationToken] = seth | setmh | setml | setl | inch | incmh | incml | incl |
     orh | ormh | orml | orl | andnh | andnmh | andnml | andnl
 
+  def jmp: Parser[JmpToken.type] = "JMP" ^^ { _ => JmpToken }
+  def go: Parser[GoToken.type] = "GO" ^^ { _ => GoToken }
+  def bn: Parser[BnToken.type] = "BN" ^^ { _ => BnToken }
+  def bz: Parser[BzToken.type] = "BZ" ^^ { _ => BzToken }
+  def bp: Parser[BpToken.type] = "BP" ^^ { _ => BpToken }
+  def bod: Parser[BodToken.type] = "BOD" ^^ { _ => BodToken }
+  def bnn: Parser[BnnToken.type] = "BNN" ^^ { _ => BnnToken }
+  def bnz: Parser[BnzToken.type] = "BNZ" ^^ { _ => BnzToken }
+  def bnp: Parser[BnpToken.type] = "BNP" ^^ { _ => BnpToken }
+  def bev: Parser[BevToken.type] = "BEV" ^^ { _ => BevToken }
+  def pbn: Parser[PbnToken.type] = "PBN" ^^ { _ => PbnToken }
+  def pbz: Parser[PbzToken.type] = "PBZ" ^^ { _ => PbzToken }
+  def pbp: Parser[PbpToken.type] = "PBP" ^^ { _ => PbpToken }
+  def pbod: Parser[PbodToken.type] = "PBOD" ^^ { _ => PbodToken }
+  def pbnn: Parser[PbnnToken.type] = "PBNN" ^^ { _ => PbnnToken }
+  def pbnz: Parser[PbnzToken.type] = "PBNZ" ^^ { _ => PbnzToken }
+  def pbnp: Parser[PbnpToken.type] = "PBNP" ^^ { _ => PbnpToken }
+  def pbev: Parser[PbevToken.type] = "PBEV" ^^ { _ => PbevToken }
+
+  def jumpOrBranchOperation: Parser[OperationToken] = jmp | go | bz | bp | bod | bnn | bnz | bnp | bn | bev | pbz |
+    pbp | pbod | pbnn | pbnz | pbnp | pbn | pbev
+
   def operation: Parser[OperationToken] = assemblerToken | loadOperation | storeOperation | arithmeticOperation |
-    conditionalOperation | immediateConstantOperation | bitwiseOperation | bytewiseOperation | floatingPointOperation
+    conditionalOperation | immediateConstantOperation | bitwiseOperation | bytewiseOperation | floatingPointOperation |
+    jumpOrBranchOperation
 
   def line: Parser[MmixProgramLine] = {
     opt(label) ~ w ~ operation /*~ opt(w) ~ opt(address) ~ opt(w)*/ ~ opt(newLine) ^^ {

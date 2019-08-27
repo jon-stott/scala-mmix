@@ -312,6 +312,53 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
     result mustBe expected
   }
 
+  it should "parse jump and branch operations" in {
+    val line =
+      """foo JMP
+        |    GO
+        |    BN
+        |    BZ
+        |    BP
+        |    BOD
+        |    BNN
+        |    BNZ
+        |    BNP
+        |    BEV
+        |    PBN
+        |    PBZ
+        |    PBP
+        |    PBOD
+        |    PBNN
+        |    PBNZ
+        |    PBNP
+        |    PBEV
+        |""".stripMargin
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(Some(LabelToken("foo")), JmpToken),
+        MmixProgramLine(None, GoToken),
+        MmixProgramLine(None, BnToken),
+        MmixProgramLine(None, BzToken),
+        MmixProgramLine(None, BpToken),
+        MmixProgramLine(None, BodToken),
+        MmixProgramLine(None, BnnToken),
+        MmixProgramLine(None, BnzToken),
+        MmixProgramLine(None, BnpToken),
+        MmixProgramLine(None, BevToken),
+        MmixProgramLine(None, PbnToken),
+        MmixProgramLine(None, PbzToken),
+        MmixProgramLine(None, PbpToken),
+        MmixProgramLine(None, PbodToken),
+        MmixProgramLine(None, PbnnToken),
+        MmixProgramLine(None, PbnzToken),
+        MmixProgramLine(None, PbnpToken),
+        MmixProgramLine(None, PbevToken)
+      )
+    )
+    result mustBe expected
+  }
+
   it should "parse assembler tokens" in {
     val line =
       """foo IS
