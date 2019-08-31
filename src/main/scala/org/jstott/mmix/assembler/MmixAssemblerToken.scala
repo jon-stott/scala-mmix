@@ -18,6 +18,11 @@ sealed trait OperatorToken extends OperationToken {
 
 case object IsToken extends AssemblerToken
 case object LocToken extends AssemblerToken
+case object GregToken extends AssemblerToken
+case object ByteToken extends AssemblerToken
+case object WydeToken extends AssemblerToken
+case object TetraToken extends AssemblerToken
+case object OctaToken extends AssemblerToken
 
 case object TrapToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x00) }
 case object FcmpToken extends OperatorToken { override def opcode: MmixByte = MmixByte(0x01) }

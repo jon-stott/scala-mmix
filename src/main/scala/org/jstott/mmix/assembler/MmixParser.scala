@@ -16,8 +16,13 @@ object MmixParser extends RegexParsers {
 
   def is: Parser[IsToken.type] = "IS" ^^ { _ => IsToken }
   def loc: Parser[LocToken.type] = "LOC" ^^ { _ => LocToken }
+  def greg: Parser[GregToken.type] = "GREG" ^^ { _ => GregToken }
+  def byte: Parser[ByteToken.type] = "BYTE" ^^ { _ => ByteToken }
+  def wyde: Parser[WydeToken.type] = "WYDE" ^^ { _ => WydeToken }
+  def tetra: Parser[TetraToken.type] = "TETRA" ^^ { _ => TetraToken }
+  def octa: Parser[OctaToken.type] = "OCTA" ^^ { _ => OctaToken }
 
-  def assemblerToken: Parser[OperationToken] = is | loc
+  def assemblerToken: Parser[OperationToken] = is | loc | greg
 
   def lda: Parser[LdaToken.type] = "LDA" ^^ { _ => LdaToken }
   def ldb: Parser[LdbToken.type] = "LDB" ^^ { _ => LdbToken }

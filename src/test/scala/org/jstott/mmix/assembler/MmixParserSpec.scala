@@ -451,12 +451,22 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
     val line =
       """foo IS
         |    LOC
+        |    GREG
+        |    BYTE
+        |    WYDE
+        |    TETRA
+        |    OCTA
         |""".stripMargin
     val result = MmixParser.apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), IsToken),
-        MmixProgramLine(None, LocToken)
+        MmixProgramLine(None, LocToken),
+        MmixProgramLine(None, GregToken),
+        MmixProgramLine(None, ByteToken),
+        MmixProgramLine(None, WydeToken),
+        MmixProgramLine(None, TetraToken),
+        MmixProgramLine(None, OctaToken)
       )
     )
     result mustBe expected
