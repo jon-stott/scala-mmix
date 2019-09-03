@@ -9,14 +9,19 @@ object ExpressionLexer extends RegexParsers {
 
   def constant: Parser[BigInt] = decimalConstant | hexadecimalConstant
 
-  def affirmation: Parser[AffirmationToken.type] = "\\+".r ^^ { s => AffirmationToken }
-  def negation: Parser[NegationToken.type] = "-".r ^^ { s => NegationToken }
+  def affirmation: Parser[AffirmationToken.type] = "\\+".r ^^ { _ => AffirmationToken }
+  def negation: Parser[NegationToken.type] = "-".r ^^ { _ => NegationToken }
+  def complementation: Parser[ComplementationToken.type] = "~".r ^^ { _ => ComplementationToken }
+  def registerization: Parser[RegisterizationToken.type] = "\\$".r ^^ { _ => RegisterizationToken }
 
-  def unaryOperator: Parser[UnaryOperatorToken] = affirmation | negation
+  def unaryOperator: Parser[UnaryOperatorToken] = affirmation | negation | complementation | registerization
 
-  def primary: Parser[PrimaryToken] = opt(unaryOperator) ~ constant ^^ {
-    case Some(u) ~ c => ConstantToken(c, unaryOperator = u)
-    case _ ~ c       => ConstantToken(c)
+  def currentLocation: Parser[CurrentLocationToken.type] = "@" ^^ { _ => CurrentLocationToken}
+
+  def primary: Parser[PrimaryToken] = opt(unaryOperator) ~ (constant | currentLocation) ^^ {
+    case _ ~ CurrentLocationToken => CurrentLocationToken
+    case Some(u) ~ (c: BigInt)    => ConstantToken(c, unaryOperator = u)
+    case _ ~ (c: BigInt)          => ConstantToken(c)
   }
 
   def multiply: Parser[MultiplyToken.type] = "\\*".r ^^ { s => MultiplyToken }

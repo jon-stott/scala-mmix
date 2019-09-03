@@ -21,14 +21,29 @@ class ExpressionLexerSpec extends FlatSpec with MustMatchers {
     result mustBe Right(List(ConstantToken(0x3456aeFb, AffirmationToken)))
   }
 
-  it should "lex -2" in {
+  it should "lex -2 (negation)" in {
     val result = ExpressionLexer.apply("-2")
     result mustBe Right(List(ConstantToken(2, NegationToken)))
   }
 
-  it should "lex +2" in {
+  it should "lex +2 (affirmation)" in {
     val result = ExpressionLexer.apply("+2")
     result mustBe Right(List(ConstantToken(2, AffirmationToken)))
+  }
+
+  it should "lex ~2 (complementation)" in {
+    val result = ExpressionLexer.apply("~2")
+    result mustBe Right(List(ConstantToken(2, ComplementationToken)))
+  }
+
+  it should "lex $2 (registerization)" in {
+    val result = ExpressionLexer.apply("$2")
+    result mustBe Right(List(ConstantToken(2, RegisterizationToken)))
+  }
+
+  it should "lex @ (current location)" in {
+    val result = ExpressionLexer.apply("@")
+    result mustBe Right(List(CurrentLocationToken))
   }
 
   it should "lex 2*5" in {
