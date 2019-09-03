@@ -4,10 +4,13 @@ import scala.util.parsing.combinator.RegexParsers
 
 object ExpressionLexer extends RegexParsers {
 
+  def symbol: Parser[String] = "(\\d[HFB]|[A-Za-z_][A-Za-z_0-9]*)".r ^^ { s => s }
+
   def decimalConstant: Parser[BigInt] = "[0-9]{1,10}".r ^^ { BigInt(_) }
   def hexadecimalConstant: Parser[BigInt] = "#" ~> "[0-9a-fA-F]+".r ^^ { BigInt(_, 16) }
+  def characterConstant: Parser[BigInt] = "'" ~> ".".r <~ "'" ^^ { s => BigInt(s.head.toInt) }
 
-  def constant: Parser[BigInt] = decimalConstant | hexadecimalConstant
+  def constant: Parser[BigInt] = decimalConstant | hexadecimalConstant | characterConstant
 
   def affirmation: Parser[AffirmationToken.type] = "\\+".r ^^ { _ => AffirmationToken }
   def negation: Parser[NegationToken.type] = "-".r ^^ { _ => NegationToken }
@@ -23,9 +26,11 @@ object ExpressionLexer extends RegexParsers {
     case _ ~ expressionList => ParenthesisedExpression(expressionList)
   }
 
-  def nonParenthesisedExpression: Parser[PrimaryToken] = opt(unaryOperator) ~ (constant | currentLocation) ^^ {
+  def nonParenthesisedExpression: Parser[PrimaryToken] = opt(unaryOperator) ~ (symbol | constant | currentLocation) ^^ {
     case _ ~ CurrentLocationToken => CurrentLocationToken
+    case Some(u) ~ (s: String)    => SymbolToken(s, unaryOperator = u)
     case Some(u) ~ (c: BigInt)    => ConstantToken(c, unaryOperator = u)
+    case _ ~ (s: String)          => SymbolToken(s)
     case _ ~ (c: BigInt)          => ConstantToken(c)
   }
 

@@ -6,6 +6,30 @@ class ExpressionLexerSpec extends FlatSpec with MustMatchers {
 
   behavior of "ExpressionLexer"
 
+  it should "lex foo (symbol)" in {
+    ExpressionLexer.apply("foo") mustBe Right(List(SymbolToken("foo")))
+  }
+
+  it should "lex Foo (symbol)" in {
+    ExpressionLexer.apply("Foo") mustBe Right(List(SymbolToken("Foo")))
+  }
+
+  it should "lex _foo (symbol)" in {
+    ExpressionLexer.apply("_foo") mustBe Right(List(SymbolToken("_foo")))
+  }
+
+  it should "lex 1H (symbol)" in {
+    ExpressionLexer.apply("1H") mustBe Right(List(SymbolToken("1H")))
+  }
+
+  it should "lex 9B (symbol)" in {
+    ExpressionLexer.apply("9B") mustBe Right(List(SymbolToken("9B")))
+  }
+
+  it should "lex 0F (symbol)" in {
+    ExpressionLexer.apply("0F") mustBe Right(List(SymbolToken("0F")))
+  }
+
   it should "lex 2" in {
     val result = ExpressionLexer.apply("2")
     result mustBe Right(List(ConstantToken(2, AffirmationToken)))
@@ -19,6 +43,21 @@ class ExpressionLexerSpec extends FlatSpec with MustMatchers {
   it should "lex #3456aeFb" in {
     val result = ExpressionLexer.apply("#3456aeFb")
     result mustBe Right(List(ConstantToken(0x3456aeFb, AffirmationToken)))
+  }
+
+  it should "lex 'a' (character constant)" in {
+    val result = ExpressionLexer.apply("'a'")
+    result mustBe Right(List(ConstantToken('a'.toInt)))
+  }
+
+  it should "lex ''' (character constant)" in {
+    val result = ExpressionLexer.apply("'''")
+    result mustBe Right(List(ConstantToken('\''.toInt)))
+  }
+
+  it should "lex '脑' (character constant)" in {
+    val result = ExpressionLexer.apply("'脑'")
+    result mustBe Right(List(ConstantToken('脑'.toInt)))
   }
 
   it should "lex -2 (negation)" in {
@@ -162,6 +201,26 @@ class ExpressionLexerSpec extends FlatSpec with MustMatchers {
       ParenthesisedExpression(
         List(
           ConstantToken(42),
+          SubtractionToken,
+          ConstantToken(1)
+        ),
+        unaryOperator = ComplementationToken
+      )
+    ))
+  }
+
+  it should "lex #ab<<32+k&~(-k-1)" in {
+    val result = ExpressionLexer.apply("#ab<<32+k&~(-k-1)")
+    result mustBe Right(List(
+      ConstantToken(0xab),
+      LeftShiftToken,
+      ConstantToken(32),
+      AdditionToken,
+      SymbolToken("k"),
+      BitwiseAndToken,
+      ParenthesisedExpression(
+        List(
+          SymbolToken("k", NegationToken),
           SubtractionToken,
           ConstantToken(1)
         ),
