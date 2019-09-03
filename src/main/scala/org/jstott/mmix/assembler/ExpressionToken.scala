@@ -16,6 +16,7 @@ sealed trait PrimaryToken extends ExpressionToken {
 case class SymbolToken(s: String, override val unaryOperator: UnaryOperatorToken = AffirmationToken) extends PrimaryToken
 case class ConstantToken(n: BigInt, override val unaryOperator: UnaryOperatorToken = AffirmationToken) extends PrimaryToken
 case object CurrentLocationToken extends PrimaryToken
+case class ParenthesisedExpression(expression: List[ExpressionToken], override val unaryOperator: UnaryOperatorToken = AffirmationToken) extends PrimaryToken
 
 sealed trait BinaryOperatorToken extends ExpressionToken
 

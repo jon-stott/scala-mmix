@@ -18,11 +18,18 @@ object ExpressionLexer extends RegexParsers {
 
   def currentLocation: Parser[CurrentLocationToken.type] = "@" ^^ { _ => CurrentLocationToken}
 
-  def primary: Parser[PrimaryToken] = opt(unaryOperator) ~ (constant | currentLocation) ^^ {
+  def parenthesisedExpression: Parser[ParenthesisedExpression] = opt(unaryOperator) ~ ("(" ~> expr <~ ")") ^^ {
+    case Some(u) ~ expressionList => ParenthesisedExpression(expressionList, unaryOperator = u)
+    case _ ~ expressionList => ParenthesisedExpression(expressionList)
+  }
+
+  def nonParenthesisedExpression: Parser[PrimaryToken] = opt(unaryOperator) ~ (constant | currentLocation) ^^ {
     case _ ~ CurrentLocationToken => CurrentLocationToken
     case Some(u) ~ (c: BigInt)    => ConstantToken(c, unaryOperator = u)
     case _ ~ (c: BigInt)          => ConstantToken(c)
   }
+
+  def primary: Parser[PrimaryToken] = parenthesisedExpression | nonParenthesisedExpression
 
   def multiply: Parser[MultiplyToken.type] = "\\*".r ^^ { s => MultiplyToken }
   def divide: Parser[DivideToken.type] = "/".r ^^ { s => DivideToken }
@@ -43,7 +50,7 @@ object ExpressionLexer extends RegexParsers {
   def weakBinaryOperator: Parser[WeakBinaryOperatorToken] = addition | subtraction | bitwiseOr | bitwiseExclusiveOr
 
   def term: Parser[List[ExpressionToken]] = {
-    primary ~ rep(strongBinaryOperator ~ primary) ^^ {
+    log(primary)("primary") ~ rep(log(strongBinaryOperator)("strong binary operator") ~ log(primary)("primary")) ^^ {
       case p ~ list => p +: list.flatMap {
         case o ~ y => List(o, y)
       }
@@ -51,7 +58,7 @@ object ExpressionLexer extends RegexParsers {
   }
 
   def expr: Parser[List[ExpressionToken]] = {
-    term ~ rep(weakBinaryOperator ~ term) ^^ {
+    log(term)("term") ~ rep(log(weakBinaryOperator)("weak binary operator") ~ log(term)("term")) ^^ {
       case t ~ list => t ++ list.flatMap {
         case o ~ ys => o +: ys
       }

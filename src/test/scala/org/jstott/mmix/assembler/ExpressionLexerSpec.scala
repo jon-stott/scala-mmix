@@ -101,10 +101,73 @@ class ExpressionLexerSpec extends FlatSpec with MustMatchers {
     result mustBe Right(List(ConstantToken(2), BitwiseExclusiveOrToken, ConstantToken(5)))
   }
 
+  it should "lex 2+(4-3)" in {
+    val result = ExpressionLexer.apply("2+(4-3)")
+    result mustBe Right(List(ConstantToken(2), AdditionToken,
+      ParenthesisedExpression(List(ConstantToken(4), SubtractionToken, ConstantToken(3)))))
+  }
+
+  it should "lex 2+((5*(9/(1+2))-2)-3)" in {
+    val result = ExpressionLexer.apply("2+((5*(9/(1+2))-2)-3)")
+    result mustBe Right(
+      List(
+        ConstantToken(2),
+        AdditionToken,
+        ParenthesisedExpression(
+          List(
+            ParenthesisedExpression(
+              List(
+                ConstantToken(5),
+                MultiplyToken,
+                ParenthesisedExpression(
+                  List(
+                    ConstantToken(9),
+                    DivideToken,
+                    ParenthesisedExpression(
+                      List(
+                        ConstantToken(1),
+                        AdditionToken,
+                        ConstantToken(2)
+                      )
+                    )
+                  )
+                ),
+                SubtractionToken,
+                ConstantToken(2)
+              )
+            ),
+            SubtractionToken,
+            ConstantToken(3)
+          )
+        )
+      )
+    )
+  }
+
   it should "lex 2+5*6-4/3" in {
     val result = ExpressionLexer.apply("2+5*6-4/3")
     result mustBe Right(List(ConstantToken(2), AdditionToken, ConstantToken(5), MultiplyToken, ConstantToken(6),
       SubtractionToken, ConstantToken(4), DivideToken, ConstantToken(3)))
+  }
+
+  it should "lex #ab<<32+42&~(42-1)" in {
+    val result = ExpressionLexer.apply("#ab<<32+42&~(42-1)")
+    result mustBe Right(List(
+      ConstantToken(0xab),
+      LeftShiftToken,
+      ConstantToken(32),
+      AdditionToken,
+      ConstantToken(42),
+      BitwiseAndToken,
+      ParenthesisedExpression(
+        List(
+          ConstantToken(42),
+          SubtractionToken,
+          ConstantToken(1)
+        ),
+        unaryOperator = ComplementationToken
+      )
+    ))
   }
 
 }
