@@ -472,4 +472,46 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
     result mustBe expected
   }
 
+  it should "parse assembler tokens with a single expression" in {
+    val line = " JMP 1F"
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(None, JmpToken, List(
+          Expression(List(SymbolToken("1F")))
+        ))
+      )
+    )
+    result mustBe expected
+  }
+
+  it should "parse assembler tokens with two expressions" in {
+    val line = " PBNZ $0,1B"
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(None, PbnzToken, List(
+          Expression(List(ConstantToken(0, RegisterizationToken))),
+          Expression(List(SymbolToken("1B")))
+        ))
+      )
+    )
+    result mustBe expected
+  }
+
+  it should "parse assembler tokens with three expressions" in {
+    val line = " LDO $3,x0,$0"
+    val result = MmixParser.apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(None, LdoToken, List(
+          Expression(List(ConstantToken(3, RegisterizationToken))),
+          Expression(List(SymbolToken("x0"))),
+          Expression(List(ConstantToken(0, RegisterizationToken)))
+        ))
+      )
+    )
+    result mustBe expected
+  }
+
 }

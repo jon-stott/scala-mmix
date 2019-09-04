@@ -22,7 +22,7 @@ object MmixParser extends RegexParsers {
   def tetra: Parser[TetraToken.type] = "TETRA" ^^ { _ => TetraToken }
   def octa: Parser[OctaToken.type] = "OCTA" ^^ { _ => OctaToken }
 
-  def assemblerToken: Parser[OperationToken] = is | loc | greg
+  def assemblerToken: Parser[OperationToken] = is | loc | greg | byte | wyde | tetra | octa
 
   def lda: Parser[LdaToken.type] = "LDA" ^^ { _ => LdaToken }
   def ldb: Parser[LdbToken.type] = "LDB" ^^ { _ => LdbToken }
@@ -222,10 +222,12 @@ object MmixParser extends RegexParsers {
     conditionalOperation | immediateConstantOperation | bitwiseOperation | bytewiseOperation | floatingPointOperation |
     jumpOrBranchOperation | subroutineCallOperation | systemOperation | interruptOperation | otherOperation
 
+  def exprs: Parser[List[Expression]] = "\\S*".r ^^ { s => ExpressionLexer(s).getOrElse(List.empty) }
+
   def line: Parser[MmixProgramLine] = {
-    opt(label) ~ w ~ operation /*~ opt(w) ~ opt(address) ~ opt(w)*/ ~ opt(newLine) ^^ {
+    opt(label) ~ w ~ operation ~ opt(w) ~ opt(exprs) ~ opt(w) ~ opt(newLine) ^^ {
 //      case l ~ _ ~ o ~ _ ~ Some(Vacuous) ~ _ ~ _ => MmixProgramLine(l, o, None)
-      case l ~ _ ~ o /*~ _ ~ a ~ _*/ ~ _ => MmixProgramLine(l, o)
+      case l ~ _ ~ o ~ _ ~ e ~ _ ~ _ => MmixProgramLine(l, o, e.getOrElse(List.empty))
     }
   }
 
