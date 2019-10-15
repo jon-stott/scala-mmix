@@ -3,7 +3,7 @@ package org.jstott.mmix.assembler
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.RegexParsers
 
-object MmixParser extends RegexParsers {
+class MmixParser extends RegexParsers {
 
   override def skipWhitespace: Boolean = false
 
@@ -21,8 +21,9 @@ object MmixParser extends RegexParsers {
   def wyde: Parser[WydeToken.type] = "WYDE" ^^ { _ => WydeToken }
   def tetra: Parser[TetraToken.type] = "TETRA" ^^ { _ => TetraToken }
   def octa: Parser[OctaToken.type] = "OCTA" ^^ { _ => OctaToken }
+  def set: Parser[SetToken.type] = "SET" ^^ { _ => SetToken }
 
-  def assemblerToken: Parser[OperationToken] = is | loc | greg | byte | wyde | tetra | octa
+  def assemblerToken: Parser[OperationToken] = is | loc | greg | byte | wyde | tetra | octa | set
 
   def lda: Parser[LdaToken.type] = "LDA" ^^ { _ => LdaToken }
   def ldb: Parser[LdbToken.type] = "LDB" ^^ { _ => LdbToken }
@@ -218,24 +219,24 @@ object MmixParser extends RegexParsers {
 
   def otherOperation: Parser[OperationToken] = geta | get | put | swym
 
-  def operation: Parser[OperationToken] = assemblerToken | loadOperation | storeOperation | arithmeticOperation |
+  def operation: Parser[OperationToken] = loadOperation | storeOperation | arithmeticOperation |
     conditionalOperation | immediateConstantOperation | bitwiseOperation | bytewiseOperation | floatingPointOperation |
-    jumpOrBranchOperation | subroutineCallOperation | systemOperation | interruptOperation | otherOperation
+    jumpOrBranchOperation | subroutineCallOperation | systemOperation | interruptOperation | otherOperation | assemblerToken
 
   def exprs: Parser[List[Expression]] = "\\S*".r ^^ { s => ExpressionLexer(s).getOrElse(List.empty) }
 
   def line: Parser[MmixProgramLine] = {
     opt(label) ~ w ~ operation ~ opt(w) ~ opt(exprs) ~ opt(w) ~ opt(newLine) ^^ {
-//      case l ~ _ ~ o ~ _ ~ Some(Vacuous) ~ _ ~ _ => MmixProgramLine(l, o, None)
-      case l ~ _ ~ o ~ _ ~ e ~ _ ~ _ => MmixProgramLine(l, o, e.getOrElse(List.empty))
+      case l ~ _ ~ o ~ _ ~ e ~ _ ~ _ => lineNumber = lineNumber + 1; MmixProgramLine(l, o, e.getOrElse(List.empty), lineNumber)
     }
   }
+
+  var lineNumber = 0
 
   def tokens: Parser[List[MmixLine]] = {
     phrase(
       rep(
         line
-//        comment | line | alf
       )
     )
   }

@@ -19,7 +19,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    LDA
         |    LDHT
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), LdbToken),
@@ -50,7 +50,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    STCO
         |    STHT
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), StbToken),
@@ -91,7 +91,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    CMP
         |    CMPU
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), AddToken),
@@ -138,7 +138,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    ZSNP
         |    ZSEV
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), CsnToken),
@@ -175,7 +175,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    MUX
         |    SADD
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), AndToken),
@@ -202,7 +202,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    MOR
         |    MXOR
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), BdifToken),
@@ -240,7 +240,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    LDSF
         |    STSF
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), FaddToken),
@@ -288,7 +288,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    ANDNML
         |    ANDNL
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), SethToken),
@@ -333,7 +333,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    PBNP
         |    PBEV
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), JmpToken),
@@ -367,7 +367,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    SAVE
         |    UNSAVE
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), PushjToken),
@@ -393,7 +393,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    CSWAP
         |    LDVTS
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), LduncToken),
@@ -417,7 +417,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    TRAP
         |    RESUME
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), TripToken),
@@ -435,7 +435,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    GETA
         |    SWYM
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), GetToken),
@@ -457,7 +457,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
         |    TETRA
         |    OCTA
         |""".stripMargin
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(Some(LabelToken("foo")), IsToken),
@@ -474,7 +474,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
 
   it should "parse assembler tokens with a single expression" in {
     val line = " JMP 1F"
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(None, JmpToken, List(
@@ -487,7 +487,7 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
 
   it should "parse assembler tokens with two expressions" in {
     val line = " PBNZ $0,1B"
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(None, PbnzToken, List(
@@ -501,13 +501,28 @@ class MmixParserSpec extends FlatSpec with MustMatchers {
 
   it should "parse assembler tokens with three expressions" in {
     val line = " LDO $3,x0,$0"
-    val result = MmixParser.apply(line)
+    val result = (new MmixParser).apply(line)
     val expected = Right(
       List(
         MmixProgramLine(None, LdoToken, List(
           Expression(List(ConstantToken(3, RegisterizationToken))),
           Expression(List(SymbolToken("x0"))),
           Expression(List(ConstantToken(0, RegisterizationToken)))
+        ))
+      )
+    )
+    result mustBe expected
+  }
+
+  it should "foo" in {
+    val line = " TRAP 0,Halt,0"
+    val result = (new MmixParser).apply(line)
+    val expected = Right(
+      List(
+        MmixProgramLine(None, TrapToken, List(
+          Expression(List(ConstantToken(0))),
+          Expression(List(SymbolToken("Halt"))),
+          Expression(List(ConstantToken(0)))
         ))
       )
     )

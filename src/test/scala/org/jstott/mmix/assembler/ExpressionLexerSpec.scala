@@ -60,6 +60,11 @@ class ExpressionLexerSpec extends FlatSpec with MustMatchers {
     result mustBe Right(List(Expression(List(ConstantToken('脑'.toInt)))))
   }
 
+  it should "lex \"foo\" (string constant)" in {
+    val result = ExpressionLexer.apply("\"foo\"")
+    result mustBe Right(List(Expression(List(StringToken(List('f'.toInt,'o'.toInt, 'o'.toInt))))))
+  }
+
   it should "lex -2 (negation)" in {
     val result = ExpressionLexer.apply("-2")
     result mustBe Right(List(Expression(List(ConstantToken(2, NegationToken)))))
@@ -87,37 +92,37 @@ class ExpressionLexerSpec extends FlatSpec with MustMatchers {
 
   it should "lex 2*5" in {
     val result = ExpressionLexer.apply("2*5")
-    result mustBe Right(List(Expression(List(ConstantToken(2), MultiplyToken, ConstantToken(5)))))
+    result mustBe Right(List(Expression(List(ParenthesisedExpression(List(ConstantToken(2), MultiplyToken, ConstantToken(5)))))))
   }
 
   it should "lex 2//5" in {
     val result = ExpressionLexer.apply("2//5")
-    result mustBe Right(List(Expression(List(ConstantToken(2), FractionalDivideToken, ConstantToken(5)))))
+    result mustBe Right(List(Expression(List(ParenthesisedExpression(List(ConstantToken(2), FractionalDivideToken, ConstantToken(5)))))))
   }
 
   it should "lex 2/5" in {
     val result = ExpressionLexer.apply("2/5")
-    result mustBe Right(List(Expression(List(ConstantToken(2), DivideToken, ConstantToken(5)))))
+    result mustBe Right(List(Expression(List(ParenthesisedExpression(List(ConstantToken(2), DivideToken, ConstantToken(5)))))))
   }
 
   it should "lex 2%5" in {
     val result = ExpressionLexer.apply("2%5")
-    result mustBe Right(List(Expression(List(ConstantToken(2), RemainderToken, ConstantToken(5)))))
+    result mustBe Right(List(Expression(List(ParenthesisedExpression(List(ConstantToken(2), RemainderToken, ConstantToken(5)))))))
   }
 
   it should "lex 2<<5" in {
     val result = ExpressionLexer.apply("2<<5")
-    result mustBe Right(List(Expression(List(ConstantToken(2), LeftShiftToken, ConstantToken(5)))))
+    result mustBe Right(List(Expression(List(ParenthesisedExpression(List(ConstantToken(2), LeftShiftToken, ConstantToken(5)))))))
   }
 
   it should "lex 2>>5" in {
     val result = ExpressionLexer.apply("2>>5")
-    result mustBe Right(List(Expression(List(ConstantToken(2), RightShiftToken, ConstantToken(5)))))
+    result mustBe Right(List(Expression(List(ParenthesisedExpression(List(ConstantToken(2), RightShiftToken, ConstantToken(5)))))))
   }
 
   it should "lex 2&5" in {
     val result = ExpressionLexer.apply("2&5")
-    result mustBe Right(List(Expression(List(ConstantToken(2), BitwiseAndToken, ConstantToken(5)))))
+    result mustBe Right(List(Expression(List(ParenthesisedExpression(List(ConstantToken(2), BitwiseAndToken, ConstantToken(5)))))))
   }
 
   it should "lex 2+5" in {
@@ -156,17 +161,25 @@ class ExpressionLexerSpec extends FlatSpec with MustMatchers {
           List(
             ParenthesisedExpression(
               List(
-                ConstantToken(5),
-                MultiplyToken,
                 ParenthesisedExpression(
                   List(
-                    ConstantToken(9),
-                    DivideToken,
+                    ConstantToken(5),
+                    MultiplyToken,
                     ParenthesisedExpression(
                       List(
-                        ConstantToken(1),
-                        AdditionToken,
-                        ConstantToken(2)
+                        ParenthesisedExpression(
+                          List(
+                            ConstantToken(9),
+                            DivideToken,
+                            ParenthesisedExpression(
+                              List(
+                                ConstantToken(1),
+                                AdditionToken,
+                                ConstantToken(2)
+                              )
+                            )
+                          )
+                        )
                       )
                     )
                   )
@@ -185,48 +198,99 @@ class ExpressionLexerSpec extends FlatSpec with MustMatchers {
 
   it should "lex 2+5*6-4/3" in {
     val result = ExpressionLexer.apply("2+5*6-4/3")
-    result mustBe Right(List(Expression(List(ConstantToken(2), AdditionToken, ConstantToken(5), MultiplyToken,
-      ConstantToken(6), SubtractionToken, ConstantToken(4), DivideToken, ConstantToken(3)))))
+    result mustBe Right(
+      List(
+        Expression(
+          List(
+            ConstantToken(2),
+            AdditionToken,
+            ParenthesisedExpression(
+              List(
+                ConstantToken(5),
+                MultiplyToken,
+                ConstantToken(6)
+              )
+            ),
+            SubtractionToken,
+            ParenthesisedExpression(
+              List(
+                ConstantToken(4),
+                DivideToken,
+                ConstantToken(3)
+              )
+            )
+          )
+        )
+      )
+    )
   }
 
   it should "lex #ab<<32+42&~(42-1)" in {
     val result = ExpressionLexer.apply("#ab<<32+42&~(42-1)")
-    result mustBe Right(List(Expression(List(
-      ConstantToken(0xab),
-      LeftShiftToken,
-      ConstantToken(32),
-      AdditionToken,
-      ConstantToken(42),
-      BitwiseAndToken,
-      ParenthesisedExpression(
-        List(
-          ConstantToken(42),
-          SubtractionToken,
-          ConstantToken(1)
-        ),
-        unaryOperator = ComplementationToken
+    result mustBe Right(
+      List(
+        Expression(
+          List(
+            ParenthesisedExpression(
+              List(
+                ConstantToken(0xab),
+                LeftShiftToken,
+                ConstantToken(32)
+              )
+            ),
+            AdditionToken,
+            ParenthesisedExpression(
+              List(
+                ConstantToken(42),
+                BitwiseAndToken,
+                ParenthesisedExpression(
+                  List(
+                    ConstantToken(42),
+                    SubtractionToken,
+                    ConstantToken(1)
+                  ),
+                  unaryOperator = ComplementationToken
+                )
+              )
+            )
+          )
+        )
       )
-    ))))
+    )
   }
 
   it should "lex #ab<<32+k&~(-k-1)" in {
     val result = ExpressionLexer.apply("#ab<<32+k&~(-k-1)")
-    result mustBe Right(List(Expression(List(
-      ConstantToken(0xab),
-      LeftShiftToken,
-      ConstantToken(32),
-      AdditionToken,
-      SymbolToken("k"),
-      BitwiseAndToken,
-      ParenthesisedExpression(
-        List(
-          SymbolToken("k", NegationToken),
-          SubtractionToken,
-          ConstantToken(1)
-        ),
-        unaryOperator = ComplementationToken
+    result mustBe Right(
+      List(
+        Expression(
+          List(
+            ParenthesisedExpression(
+              List(
+                ConstantToken(0xab),
+                LeftShiftToken,
+                ConstantToken(32)
+              )
+            ),
+            AdditionToken,
+            ParenthesisedExpression(
+              List(
+                SymbolToken("k"),
+                BitwiseAndToken,
+                ParenthesisedExpression(
+                  List(
+                    SymbolToken("k", NegationToken),
+                    SubtractionToken,
+                    ConstantToken(1)
+                  ),
+                  unaryOperator = ComplementationToken
+                )
+              )
+            )
+          )
+        )
       )
-    ))))
+    )
   }
 
   it should "lex 2,$2,x2" in {
